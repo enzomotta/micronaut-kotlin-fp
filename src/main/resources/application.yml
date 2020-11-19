@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: micronautKotlinFp
+  executors:
+    io:
+      type: fixed
+      nThreads: 75
