@@ -58,8 +58,6 @@ class MainController(private val mainService: MainService) {
 
 }
 
-class Headline (var text: String?)
-
 @Singleton
 class MainService(private val jobsDirectory: JobsDirectory) {
 	
