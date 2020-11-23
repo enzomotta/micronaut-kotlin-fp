@@ -6,6 +6,7 @@ import arrow.core.Right
 import arrow.core.computations.either
 import arrow.core.getOrHandle
 import arrow.fx.coroutines.Environment
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
@@ -28,7 +29,7 @@ import javax.inject.Singleton
 
 fun main(args: Array<String>) {
 	build()
-	    .args(*args)
+		.args(*args)
 		.packages("com.enzomotta")
 		.start()
 }
@@ -60,7 +61,7 @@ class MainController(private val mainService: MainService) {
 
 @Singleton
 class MainService(private val jobsDirectory: JobsDirectory) {
-	
+
 	suspend fun listPositions(description: Description, location: String): Either<Exception, Flowable<Position>>  =
 		either {
 			val positions = jobsDirectory.searchBy(description = description, location = location)
@@ -89,6 +90,53 @@ interface JobsDirectory {
 	suspend fun searchBy(description: Description, location: String): Flowable<Position>
 	fun searchById(Id: String): Either<Unit, Position>
 }
+
+/*
+interface Bill {
+	lateinit var billId: BillId
+	lateinit var accountId: AccountId
+	lateinit var description: String
+	lateinit var dueDate: String
+	lateinit var billType: BillType
+	var created: Long = 0
+	var payer: Payer? = null
+	var assignor: String? = null
+	var paymentLimitTime: String? = null
+	var amountTotal: Long = 0
+	var recipient: Recipient? = null
+	var paidDate: Long? = null
+	var status: BillStatus = BillStatus.PENDING
+	var lastRegisterUpdate: Long = 0
+	@JsonIgnore
+	var history: MutableList<BillEvent> = mutableListOf()
+	lateinit var source: ActionSource
+	var paymentScheduled: Boolean = false
+	var scheduledDate: String? = null
+}
+
+class Boleto(): Bill {
+	var barcode: BarCode? = null
+}
+
+class FichaCompensacao(private val boleto: Boleto) : Bill by boleto {
+	var originalAmount: Long = 0
+	var discount: Long = 0
+	var fine: Long = 0
+	var interest: Long = 0
+	var amountCalculationModel: String? = null
+	var expirationDate: String? = null
+	var lastSettleDate: String? = null
+}
+
+class BoletoConcessionaria() : Boleto()
+
+class BillTED(): Cobranca()
+
+class BillPIX(): Cobranca()
+
+*/
+
+
 
 @Singleton
 class GitHubJobsAdapter(@param:Client(value = "https://jobs.github.com") private val httpClient: RxHttpClient) : JobsDirectory {
@@ -156,16 +204,16 @@ data class PositionTO(
 	@JsonProperty("company_logo") val companyLogo: String?,
 ) {
 	fun toPosition() = Position(
-			id = id,
-			type = type,
-			url = url,
-			createdAt = createdAt,
-			company = company,
-			companyUrl = companyUrl,
-			location = location,
-			title = title,
-			description = description,
-			howToApply = howToApply,
-			companyLogo = companyLogo
-		)
+		id = id,
+		type = type,
+		url = url,
+		createdAt = createdAt,
+		company = company,
+		companyUrl = companyUrl,
+		location = location,
+		title = title,
+		description = description,
+		howToApply = howToApply,
+		companyLogo = companyLogo
+	)
 }
